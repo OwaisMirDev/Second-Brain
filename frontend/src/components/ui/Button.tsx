@@ -6,29 +6,31 @@ export interface ButtonProps {
   onClick?: () => void;
 }
 
-const sizeStyles = {
-  sm: "px-2  py-1.5 text-sm",
-  md: "px-4  py-1.5 text-md",
-  lg: "px-4  py-1.5 text-lg",
+const sizeStyles: Record<ButtonProps["size"], string> = {
+  sm: "px-2 py-1.5 text-sm",
+  md: "px-4 py-1.5 text-base",
+  lg: "px-4 py-1.5 text-lg",
 };
 
-const iconSize = {
-  sm: 20,
-  md: 22,
-  lg: 24,
+const iconSize: Record<ButtonProps["size"], number> = {
+  sm: 18,
+  md: 20,
+  lg: 22,
 };
 
-const variants = {
+const variants: Record<ButtonProps["variant"], string> = {
   primary: "bg-indigo-600 text-white",
   secondary: "bg-indigo-100 text-indigo-600",
 };
+
+const defaultStyles = "rounded-lg flex items-center gap-2 ";
 
 export const Button = (props: ButtonProps) => {
   const StartIcon = props.startIcon;
 
   return (
     <button
-      className={`${sizeStyles[props.size]} rounded-lg flex justify-around items-center gap-1 ${variants[props.variant]}`}
+      className={`${sizeStyles[props.size]} ${defaultStyles} ${variants[props.variant]}`}
       onClick={props.onClick}
     >
       {StartIcon && <StartIcon size={iconSize[props.size]} />}

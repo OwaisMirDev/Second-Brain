@@ -1,11 +1,16 @@
 import "./App.css";
 import { Button } from "./components/ui/Button";
-import { Plus } from "lucide-react";
+import { Share2 } from "lucide-react";
 
 function App() {
   return (
     <>
-      <Button variant="primary" size="sm" text="Add Content" startIcon={Plus} />
+      <Button
+        variant="secondary"
+        size="md"
+        text="Add Content"
+        startIcon={Share2}
+      />
     </>
   );
 }
