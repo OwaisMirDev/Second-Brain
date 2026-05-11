@@ -1,8 +1,9 @@
-import express from "express";
+import express, { type Request, type Response } from "express";
 import { connectDB, contentModel, userModel } from "./db.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "./config.js";
 import { userMiddleware } from "./middleware.js";
+import type { AuthenticatedRequest } from "./auth.types.js";
 
 const app = express();
 const port = 3000;
@@ -38,26 +39,28 @@ app.post("/api/v1/signin", async (req, res) => {
   }
 });
 
-app.post("/api/v1/content", userMiddleware, async (req, res) => {
-  const { title, link, type } = req.body;
+app.post(
+  "/api/v1/content",
+  userMiddleware,
+  async (req: Request, res: Response) => {
+    const { title, link, type } = req.body;
 
-  await contentModel.create({
-    title,
-    link,
-    type,
-    //@ts-ignore
-    userId: req.userId,
-    tags: [],
-  });
+    await contentModel.create({
+      title,
+      link,
+      type,
+      userId: (req as AuthenticatedRequest).userId,
+      tags: [],
+    });
 
-  return res.json({
-    message: "Content created",
-  });
-});
+    return res.json({
+      message: "Content created",
+    });
+  },
+);
 
 app.get("/api/v1/content", userMiddleware, async (req, res) => {
-  //@ts-ignore
-  const userId = req.userId;
+  const userId = (req as AuthenticatedRequest).userId;
   const content = await contentModel
     .find({ userId })
     .populate("userId", "username");
@@ -69,8 +72,7 @@ app.delete("/api/v1/content", userMiddleware, async (req, res) => {
   try {
     await contentModel.deleteMany({
       _id: contentId,
-      //@ts-ignore
-      userId: req.userId,
+      userId: (req as AuthenticatedRequest).userId,
     });
   } catch (error) {
     console.log(error);
@@ -80,7 +82,7 @@ app.delete("/api/v1/content", userMiddleware, async (req, res) => {
   });
 });
 
-app.post("/api/v1/brain/share", (req, res) => {});
+app.post("/api/v1/brain/share", userMiddleware, (req, res) => {});
 
 app.get("/api/v1/brain/:shareLink", (req, res) => {});
 
