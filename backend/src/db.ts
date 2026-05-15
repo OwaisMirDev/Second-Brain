@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, mongo } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 export const connectDB = async () => {
   await mongoose.connect(`mongodb://localhost:27017/brain`);
@@ -8,9 +8,11 @@ const userSchema = new Schema({
   username: {
     type: String,
     unique: true,
+    required: true,
   },
   password: {
     type: String,
+    required: true,
   },
 });
 export const userModel = model("user", userSchema);

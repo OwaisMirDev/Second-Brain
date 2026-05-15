@@ -1,17 +1,19 @@
 import mongoose, { Schema, model, mongo } from "mongoose";
-const connectDB = async () => {
+export const connectDB = async () => {
     await mongoose.connect(`mongodb://localhost:27017/brain`);
 };
 const userSchema = new Schema({
     username: {
         type: String,
         unique: true,
+        required: true,
     },
     password: {
         type: String,
+        required: true,
     },
 });
-const userModel = model("user", userSchema);
+export const userModel = model("user", userSchema);
 const tagSchema = new Schema({
     title: {
         type: String,
@@ -19,7 +21,17 @@ const tagSchema = new Schema({
         unique: true,
     },
 });
-const tagModel = model("tag", tagSchema);
+export const tagModel = model("tag", tagSchema);
+const linkSchema = new Schema({
+    hash: { type: String },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
+        unique: true,
+    },
+});
+export const linkModel = model("link", linkSchema);
 const contentTypes = ["image", "video", "article", "audio", "document"];
 const contentSchema = new Schema({
     title: { type: String, required: true },
@@ -31,7 +43,6 @@ const contentSchema = new Schema({
             ref: "tag",
         },
     ],
-    userId: { type: Schema.Types.ObjectId, ref: "user" },
+    userId: { type: Schema.Types.ObjectId, ref: "user", required: true },
 });
-const contentModel = model("content", contentSchema);
-export { userModel, tagModel, contentModel, connectDB };
+export const contentModel = model("content", contentSchema);
